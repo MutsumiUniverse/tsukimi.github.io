@@ -8,14 +8,16 @@ const items = [
 ];
 ---
 
-<section class="flex items-center justify-between px-(--padding-x) py-9">
-  {items.map((item, i) => (
-    <>
-      {i > 0 && <span class="h-[34px] w-px shrink-0 bg-dusk" aria-hidden="true" />}
-      <div class="flex flex-col gap-[5px]">
-        <span class="font-mono text-[11px] uppercase leading-[14px] tracking-[0.12em] text-mist">{item.label}</span>
-        <span class="text-[15px] font-semibold leading-[18px] text-moon">{item.value}</span>
-      </div>
-    </>
-  ))}
+<section class="px-(--padding-x) py-9">
+  <div class="mx-auto flex w-full max-w-[1312px] items-center justify-between">
+    {items.map((item, i) => (
+      <>
+        {i > 0 && <span class="h-[34px] w-px shrink-0 bg-dusk" aria-hidden="true" />}
+        <div class="flex flex-col gap-[5px]">
+          <span class="font-mono text-[11px] uppercase leading-[14px] tracking-[0.12em] text-mist">{item.label}</span>
+          <span class="text-[15px] font-semibold leading-[18px] text-moon">{item.value}</span>
+        </div>
+      </>
+    ))}
+  </div>
 </section>
