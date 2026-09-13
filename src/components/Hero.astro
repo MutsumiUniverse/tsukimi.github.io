@@ -8,7 +8,7 @@ const t = useTranslations((Astro.currentLocale ?? "en") as Lang);
 ---
 
 <section class="hero relative flex flex-col overflow-clip" id="top">
-	<div class="parallax pointer-events-none absolute inset-0" data-depth="0.08" aria-hidden="true">
+	<div class="pointer-events-none absolute inset-0" aria-hidden="true">
 		<div class="moon-glow absolute left-1/2 top-[-320px] h-[720px] w-[720px] -translate-x-1/2 rounded-full"></div>
 	</div>
 
@@ -31,8 +31,8 @@ const t = useTranslations((Astro.currentLocale ?? "en") as Lang);
 			<p class="mt-5 font-mono text-xs leading-4 text-dusk sm:mt-[30px]">{t("hero.meta")}</p>
 		</div>
 
-		<!-- Parallax layer: screenshot (depth 0.18) -->
-		<div class="parallax mt-10 shrink-0 sm:mt-0" data-depth="0.18">
+		<!-- Screenshot -->
+		<div class="mt-10 shrink-0 sm:mt-0">
 			<Image
 				class="h-auto w-full rounded-window object-cover shadow-[#05030C8C_0_3px_18px] sm:h-[406px] sm:w-[578px]"
 				src={heroShot}
@@ -63,49 +63,13 @@ const t = useTranslations((Astro.currentLocale ?? "en") as Lang);
 		);
 	}
 
-	.parallax {
-		will-change: transform;
+	.moon-glow {
+		background: radial-gradient(
+			circle,
+			color-mix(in srgb, var(--color-moon) 7%, transparent) 0%,
+			color-mix(in srgb, var(--color-moon) 3%, transparent) 42%,
+			transparent 70%
+		);
 	}
 </style>
 
-<script>
-	const hero = document.querySelector<HTMLElement>(".hero");
-	const layers = hero?.querySelectorAll<HTMLElement>("[data-depth]");
-
-	if (hero && layers?.length && !matchMedia("(prefers-reduced-motion: reduce)").matches) {
-		let targetX = 0;
-		let targetY = 0;
-		let curX = 0;
-		let curY = 0;
-		let raf = 0;
-
-		const render = () => {
-			curX += (targetX - curX) * 0.12;
-			curY += (targetY - curY) * 0.12;
-			const sy = window.scrollY;
-			for (const el of layers) {
-				const depth = Number(el.dataset.depth);
-				const dx = -curX * depth * 60;
-				const dy = -curY * depth * 60 + sy * depth * 0.6;
-				el.style.transform = `translate3d(${dx.toFixed(2)}px, ${dy.toFixed(2)}px, 0)`;
-			}
-			if (Math.abs(targetX - curX) > 0.001 || Math.abs(targetY - curY) > 0.001 || sy > 0) {
-				raf = requestAnimationFrame(render);
-			} else {
-				raf = 0;
-			}
-		};
-
-		const kick = () => {
-			if (!raf) raf = requestAnimationFrame(render);
-		};
-
-		window.addEventListener("mousemove", (e) => {
-			targetX = (e.clientX / window.innerWidth) * 2 - 1;
-			targetY = (e.clientY / window.innerHeight) * 2 - 1;
-			kick();
-		}, { passive: true });
-
-		window.addEventListener("scroll", kick, { passive: true });
-	}
-</script>
