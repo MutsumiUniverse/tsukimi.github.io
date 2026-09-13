@@ -6,8 +6,8 @@ import type { Lang } from "../i18n/ui";
 const t = useTranslations((Astro.currentLocale ?? "en") as Lang);
 ---
 
-<footer class="border-t border-moon/8 px-(--padding-x) py-[34px]">
-	<div class="mx-auto flex w-full max-w-[1312px] items-center justify-between">
+<footer class="border-t border-moon/8 px-(--padding-x) py-7 sm:py-[34px]">
+	<div class="mx-auto flex w-full max-w-[1312px] flex-col gap-[14px] sm:flex-row sm:items-center sm:justify-between">
 		<div class="flex items-center gap-3">
 			<img src={logo.src} alt="" width="22" height="22" class="rounded-md" />
 			<span class="text-sm font-semibold leading-[18px] text-moon">Tsukimi</span>

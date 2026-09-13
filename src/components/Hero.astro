@@ -12,15 +12,15 @@ const t = useTranslations((Astro.currentLocale ?? "en") as Lang);
 		<div class="moon-glow absolute left-1/2 top-[-320px] h-[720px] w-[720px] -translate-x-1/2 rounded-full"></div>
 	</div>
 
-	<div class="relative mx-auto flex w-full max-w-[1440px] items-center justify-between px-(--padding-x) pb-[104px] pt-[139px]">
-		<div class="flex w-[600px] shrink-0 flex-col items-start">
-			<h1 class="mt-[26px] text-[62px] font-normal leading-[68px] tracking-[-0.01em] text-moon">
+	<div class="relative mx-auto flex w-full max-w-[1440px] flex-col px-(--padding-x) pb-10 pt-[100px] sm:flex-row sm:items-center sm:justify-between sm:pb-[104px] sm:pt-[139px]">
+		<div class="flex w-full shrink-0 flex-col items-start sm:w-[600px]">
+			<h1 class="mt-5 text-[40px] font-normal leading-[46px] tracking-[-0.01em] text-moon sm:mt-[26px] sm:text-[62px] sm:leading-[68px]">
 				{t("hero.title.1")}<br />{t("hero.title.2")}<br />{t("hero.title.3")}
 			</h1>
-			<div class="mt-[38px] flex items-end gap-[21px]">
+			<div class="mt-7 flex w-full items-end gap-[21px] sm:mt-[38px] sm:w-auto">
 				<a
 					href="#install"
-					class="flex items-center gap-[9px] rounded-sm border-t border-(--btn-border) bg-button px-5 py-3 text-[15px] font-semibold leading-[18px] text-moon shadow-[var(--btn-shadow)_0_1px_12px] transition-colors hover:bg-[#4a4a4a]"
+					class="flex w-full items-center justify-center gap-[9px] rounded-sm border-t border-(--btn-border) bg-button px-5 py-3 text-[15px] font-semibold leading-[18px] text-moon shadow-[var(--btn-shadow)_0_1px_12px] transition-colors hover:bg-[#4a4a4a] sm:w-auto"
 				>
 					<svg width="15" height="15" viewBox="0 0 16 16" aria-hidden="true" class="shrink-0">
 						<path d="M8 2.5 V10 M4.8 7 L8 10.2 L11.2 7 M3 13.5 H13" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
@@ -28,13 +28,13 @@ const t = useTranslations((Astro.currentLocale ?? "en") as Lang);
 					{t("hero.cta")}
 				</a>
 			</div>
-			<p class="mt-[30px] font-mono text-xs leading-4 text-dusk">{t("hero.meta")}</p>
+			<p class="mt-5 font-mono text-xs leading-4 text-dusk sm:mt-[30px]">{t("hero.meta")}</p>
 		</div>
 
 		<!-- Parallax layer: screenshot (depth 0.18) -->
-		<div class="parallax shrink-0" data-depth="0.18">
+		<div class="parallax mt-10 shrink-0 sm:mt-0" data-depth="0.18">
 			<Image
-				class="h-[406px] w-[578px] rounded-window object-cover shadow-[#05030C8C_0_3px_18px]"
+				class="h-auto w-full rounded-window object-cover shadow-[#05030C8C_0_3px_18px] sm:h-[406px] sm:w-[578px]"
 				src={heroShot}
 				alt={t("hero.shot.alt")}
 				widths={[578, 1156, 1617]}

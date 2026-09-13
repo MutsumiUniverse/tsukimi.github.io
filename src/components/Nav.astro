@@ -9,19 +9,19 @@ const t = useTranslations(lang);
 ---
 
 <nav id="site-nav" class="fixed inset-x-0 top-0 z-50 transition-[background-color,border-color,backdrop-filter] duration-[240ms]">
-  <div class="mx-auto flex w-full max-w-[1440px] items-center justify-between px-(--padding-x) py-6">
-    <a class="flex items-center gap-3" href="#top" aria-label="Tsukimi">
-      <img src={logo.src} alt="" width="30" height="30" class="rounded-sm" />
+  <div class="mx-auto flex w-full max-w-[1440px] items-center justify-between px-(--padding-x) py-4 sm:py-6">
+    <a class="flex items-center gap-[9px] sm:gap-3" href="#top" aria-label="Tsukimi">
+      <img src={logo.src} alt="" width="26" height="26" class="rounded-[7px] sm:h-[30px] sm:w-[30px] sm:rounded-sm" />
       <span class="text-[17px] font-semibold leading-[22px] tracking-[-0.01em] text-moon">Tsukimi</span>
     </a>
     <div class="flex items-center gap-[30px]">
-      <a class="text-sm leading-[18px] text-moon transition-colors hover:text-dusk" href="#screenshots">
+      <a class="hidden text-sm leading-[18px] text-moon transition-colors hover:text-dusk sm:inline" href="#screenshots">
         {t("nav.screenshots")}
       </a>
-      <a class="text-sm leading-[18px] text-moon transition-colors hover:text-dusk" href="#install">
+      <a class="hidden text-sm leading-[18px] text-moon transition-colors hover:text-dusk sm:inline" href="#install">
         {t("nav.install")}
       </a>
-      <div class="lang-switcher relative">
+      <div class="lang-switcher relative hidden sm:block">
         <button
           type="button"
           class="flex items-center cursor-pointer gap-1.5 font-mono text-xs leading-4 text-dusk transition-colors hover:text-moon"

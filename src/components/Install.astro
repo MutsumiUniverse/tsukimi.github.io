@@ -50,18 +50,18 @@ const distros: { name: string; lines: Line[] }[] = [
 ];
 ---
 
-<section id="install" class="install px-(--padding-x) pb-28 pt-[104px]">
+<section id="install" class="install px-(--padding-x) pb-[72px] pt-10 sm:pb-28 sm:pt-[104px]">
   <div class="mx-auto flex w-full max-w-[1312px] flex-col">
-    <h2 class="text-[56px] font-normal leading-[60px] tracking-[-0.01em] text-moon">{t("install.title")}</h2>
+    <h2 class="text-[40px] font-normal leading-[46px] tracking-[-0.01em] text-moon sm:text-[56px] sm:leading-[60px]">{t("install.title")}</h2>
 
-  <div class="mt-14 flex w-fit items-center gap-0.5 rounded-sm bg-button" role="tablist" aria-label={t("install.tabs")}>
+  <div class="mt-9 flex w-full flex-wrap items-center gap-0.5 rounded-sm bg-button sm:mt-14 sm:w-fit" role="tablist" aria-label={t("install.tabs")}>
     {distros.map((d, i) => (
       <button
         role="tab"
         aria-selected={i === 0}
         data-tab={i}
         class:list={[
-          "flex items-center rounded-sm border-t border-transparent px-6 py-2.5 text-sm leading-[18px] transition-colors cursor-pointer",
+          "flex grow basis-[30%] items-center justify-center rounded-sm border-t border-transparent px-3 py-2.5 text-sm leading-[18px] transition-colors cursor-pointer sm:grow-0 sm:basis-auto sm:px-6",
           i === 0 ? "bg-tab-active font-semibold text-moon border-(--btn-border)" : "font-medium text-tab-text hover:text-moon",
         ]}
       >
@@ -74,15 +74,15 @@ const distros: { name: string; lines: Line[] }[] = [
     <div
       role="tabpanel"
       data-panel={i}
-      class:list={["mt-5 flex flex-col gap-[14px] rounded-sm bg-bg px-[34px] py-[30px]", i !== 0 && "hidden"]}
+      class:list={["mt-5 flex flex-col gap-[14px] rounded-sm bg-bg px-5 py-6 sm:px-[34px] sm:py-[30px]", i !== 0 && "hidden"]}
     >
-      <div class="flex items-center justify-between gap-6">
+      <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between sm:gap-6">
         <div class="flex min-w-0 flex-col gap-[14px]">
           {d.lines.map((line) =>
             line.type === "cmd" ? (
               <div class="flex items-center gap-3">
                 <span class="font-mono text-base leading-5 text-dusk">$</span>
-                <code class="font-mono text-base leading-5 text-moon">{line.text}</code>
+                <code class="font-mono text-sm leading-5 text-moon sm:text-base">{line.text}</code>
               </div>
             ) : (
               <p class="font-mono text-[13px] leading-4 text-dusk">{line.text}</p>
@@ -90,7 +90,7 @@ const distros: { name: string; lines: Line[] }[] = [
           )}
         </div>
         <button
-          class="copy-btn flex shrink-0 items-center gap-2 self-start rounded-sm border-t border-(--btn-border) bg-button px-[14px] py-2 text-[13px] font-medium leading-4 text-moon shadow-[var(--btn-shadow)_0_1px_10px] transition-colors hover:bg-[#4a4a4a]"
+          class="copy-btn flex w-fit shrink-0 items-center gap-2 self-start rounded-sm border-t border-(--btn-border) bg-button px-[14px] py-2 text-[13px] font-medium leading-4 text-moon shadow-[var(--btn-shadow)_0_1px_10px] transition-colors hover:bg-[#4a4a4a]"
           data-copy={d.lines
             .filter((l) => l.type === "cmd")
             .map((l) => l.text)

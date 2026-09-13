@@ -27,7 +27,7 @@
   --font-mono: "JetBrains Mono Variable", "JetBrains Mono", ui-monospace, monospace;
   --font-display: "Noto Serif", serif;
 
-  --padding-x: 64px;
+  --padding-x: 20px;
   --radius-sm: 8px;
   --radius-window: 4px;
 }
@@ -42,4 +42,10 @@ body {
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+@media (min-width: 640px) {
+  :root {
+    --padding-x: 64px;
+  }
 }

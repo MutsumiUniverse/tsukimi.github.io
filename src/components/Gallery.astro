@@ -9,20 +9,20 @@ import type { Lang } from "../i18n/ui";
 const t = useTranslations((Astro.currentLocale ?? "en") as Lang);
 
 const shots = [
-  { src: libraryShot, caption: t("gallery.library"), alt: t("gallery.library.alt"), offset: "mt-0" },
-  { src: playerShot, caption: t("gallery.player"), alt: t("gallery.player.alt"), offset: "mt-11" },
-  { src: musicShot, caption: t("gallery.music"), alt: t("gallery.music.alt"), offset: "mt-[88px]" },
+  { src: libraryShot, caption: t("gallery.library"), alt: t("gallery.library.alt"), offset: "sm:mt-0" },
+  { src: playerShot, caption: t("gallery.player"), alt: t("gallery.player.alt"), offset: "sm:mt-11" },
+  { src: musicShot, caption: t("gallery.music"), alt: t("gallery.music.alt"), offset: "sm:mt-[88px]" },
 ];
 ---
 
-<section id="screenshots" class="gallery px-(--padding-x) pb-[120px] pt-[104px]">
+<section id="screenshots" class="gallery px-(--padding-x) pb-[72px] pt-10 sm:pb-[120px] sm:pt-[104px]">
   <div class="mx-auto flex w-full max-w-[1312px] flex-col">
-    <h2 class="text-[56px] font-normal leading-[60px] tracking-[-0.01em] text-moon">{t("gallery.title")}</h2>
-    <div class="mt-[76px] flex items-start justify-between gap-8">
+    <h2 class="text-[40px] font-normal leading-[46px] tracking-[-0.01em] text-moon sm:text-[56px] sm:leading-[60px]">{t("gallery.title")}</h2>
+    <div class="mt-9 flex flex-col gap-8 sm:mt-[76px] sm:flex-row sm:items-start sm:justify-between sm:gap-8">
       {shots.map((shot) => (
         <figure class={`flex flex-col gap-[14px] ${shot.offset}`}>
           <Image
-            class="h-auto min-w-[416px] rounded-window shadow-[#05030C8C_0_3px_18px]"
+            class="h-auto w-full rounded-window shadow-[#05030C8C_0_3px_18px] sm:min-w-[416px]"
             src={shot.src}
             alt={shot.alt}
             widths={[416, 832]}
