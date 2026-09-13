@@ -5,6 +5,7 @@ import tailwindcss from '@tailwindcss/vite';
 
 export default defineConfig({
   site: 'https://tsukimi.github.io',
+  publicDir:'./tsukimi.github.io',
   i18n: {
     locales: ['en', 'zh-cn'],
     defaultLocale: 'en',
