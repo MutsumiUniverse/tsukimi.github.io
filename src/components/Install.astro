@@ -65,75 +65,37 @@ const distros: Distro[] = [
       role="tablist"
       aria-label={t("install.tabs")}
     >
-      {distros.map((d, i) =>
-        d.options ? (
-          <div
-            class="install-tab-wrap relative flex grow basis-[30%] items-center justify-center rounded-sm border-t border-transparent transition-colors sm:grow-0 sm:basis-auto"
-            data-tab-wrap={i}
-          >
-            <button
-              role="tab"
-              aria-selected="false"
-              aria-haspopup="listbox"
-              aria-expanded="false"
-              data-tab={i}
-              data-options={JSON.stringify(d.options)}
-              class="install-tab-btn flex w-full cursor-pointer items-center justify-center gap-1.5 rounded-sm px-3 py-2.5 text-sm font-medium leading-[18px] text-inherit transition-colors sm:w-auto sm:px-6"
-            >
-              <span class="install-tab-label">{d.options[0].label}</span>
-              <svg width="10" height="10" viewBox="0 0 10 10" aria-hidden="true" class="shrink-0 text-inherit transition-colors">
-                <path
-                  d="M2.5 3.8 L5 6.3 L7.5 3.8"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="1.4"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-              </svg>
-            </button>
-            <ul
-              class="install-tab-menu invisible absolute left-0 top-full z-10 mt-1 min-w-[160px] translate-y-1 rounded-sm border border-moon/8 bg-[#1a1a1a] py-1 opacity-0 shadow-[#05030C8C_0_3px_18px] transition-[opacity,transform] duration-150"
-              role="listbox"
-            >
-              {d.options.map((o, j) => (
-                <li role="option" aria-selected={j === 0} data-option={j}>
-                  <button
-                    type="button"
-                    class={`flex w-full items-center justify-between px-3 py-1.5 text-left text-sm leading-[18px] transition-colors ${j === 0 ? "text-moon" : "text-dusk hover:text-moon"}`}
-                  >
-                    {o.label}
-                    {j === 0 && (
-                      <svg width="10" height="10" viewBox="0 0 10 10" aria-hidden="true" class="shrink-0">
-                        <path
-                          d="M1.8 5.2 L4 7.4 L8.2 2.8"
-                          fill="none"
-                          stroke="currentColor"
-                          stroke-width="1.4"
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                        />
-                      </svg>
-                    )}
-                  </button>
-                </li>
-              ))}
-            </ul>
-          </div>
-        ) : (
-          <button
-            role="tab"
-            aria-selected={i === 0}
-            data-tab={i}
-            class:list={[
-              "flex grow basis-[30%] items-center justify-center rounded-sm border-t border-transparent px-3 py-2.5 text-sm leading-[18px] transition-colors cursor-pointer sm:grow-0 sm:basis-auto sm:px-6",
-              i === 0 ? "bg-tab-active font-semibold text-moon border-(--btn-border)" : "font-medium text-tab-text hover:text-moon",
-            ]}
-          >
-            {d.name}
-          </button>
-        ),
-      )}
+      {distros.map((d, i) => (
+        <button
+          role="tab"
+          aria-selected={i === 0}
+          data-tab={i}
+          data-options={d.options ? JSON.stringify(d.options) : undefined}
+          class:list={[
+            "flex grow basis-[30%] items-center justify-center rounded-sm border-t border-transparent px-3 py-2.5 text-sm leading-[18px] transition-colors cursor-pointer sm:grow-0 sm:basis-auto sm:px-6",
+            i === 0 ? "bg-tab-active font-semibold text-moon border-(--btn-border)" : "font-medium text-tab-text hover:text-moon",
+          ]}
+        >
+          {d.name}
+        </button>
+      ))}
+    </div>
+
+    {/* Arch sub-tabs — shown when Arch tab is active */}
+    <div class="install-subtabs mt-3 hidden flex-wrap items-center gap-0.5 rounded-sm bg-button" data-subtabs>
+      {distros.find((d) => d.options)?.options?.map((o, j) => (
+        <button
+          role="tab"
+          aria-selected={j === 0}
+          data-subtab={j}
+          class:list={[
+            "flex grow basis-[30%] items-center justify-center rounded-sm border-t border-transparent px-3 py-2 text-[13px] leading-[16px] transition-colors cursor-pointer sm:grow-0 sm:basis-auto sm:px-4",
+            j === 0 ? "bg-tab-active font-semibold text-moon border-(--btn-border)" : "font-medium text-tab-text hover:text-moon",
+          ]}
+        >
+          {o.label}
+        </button>
+      ))}
     </div>
 
     {distros.map((d, i) => (
@@ -229,81 +191,54 @@ const distros: Distro[] = [
   const activeClasses = ["bg-tab-active", "font-semibold", "text-moon"];
   const inactiveClasses = ["font-medium", "text-tab-text"];
 
+  const subtabs = document.querySelector<HTMLElement>("[data-subtabs]");
+  const subtabBtns = subtabs?.querySelectorAll<HTMLButtonElement>("[data-subtab]");
+  const archTab = document.querySelector<HTMLElement>("[data-tab][data-options]");
+  const archOptions = archTab ? JSON.parse(archTab.dataset.options ?? "[]") : [];
+  const archPanel = archTab ? document.querySelector<HTMLElement>(`[data-panel="${archTab.dataset.tab}"]`) : null;
+
   function setActiveTab(target: string) {
     tabs.forEach((t) => {
       const active = t.dataset.tab === target;
       t.setAttribute("aria-selected", String(active));
-      const wrap = t.closest<HTMLElement>("[data-tab-wrap]");
-      const el = wrap ?? t;
-      el.classList.remove(...activeClasses, ...inactiveClasses, "hover:text-moon", "border-(--btn-border)", "border-transparent");
-      el.classList.add(...(active ? activeClasses : inactiveClasses));
-      el.classList.add(active ? "border-(--btn-border)" : "border-transparent");
-      if (!active) el.classList.add("hover:text-moon");
+      t.classList.remove(...activeClasses, ...inactiveClasses, "hover:text-moon", "border-(--btn-border)", "border-transparent");
+      t.classList.add(...(active ? activeClasses : inactiveClasses));
+      t.classList.add(active ? "border-(--btn-border)" : "border-transparent");
+      if (!active) t.classList.add("hover:text-moon");
     });
     panels.forEach((p) => p.classList.toggle("hidden", p.dataset.panel !== target));
+    // Show sub-tabs only when Arch tab is active
+    if (subtabs && archTab) {
+      subtabs.classList.toggle("hidden", target !== archTab.dataset.tab);
+      subtabs.classList.toggle("flex", target === archTab.dataset.tab);
+    }
+  }
+
+  function setActiveSubtab(idx: number) {
+    subtabBtns?.forEach((b, j) => {
+      const active = j === idx;
+      b.setAttribute("aria-selected", String(active));
+      b.classList.remove(...activeClasses, ...inactiveClasses, "hover:text-moon", "border-(--btn-border)", "border-transparent");
+      b.classList.add(...(active ? activeClasses : inactiveClasses));
+      b.classList.add(active ? "border-(--btn-border)" : "border-transparent");
+      if (!active) b.classList.add("hover:text-moon");
+    });
+    const opt = archOptions[idx];
+    if (!opt || !archPanel) return;
+    const cmd = archPanel.querySelector<HTMLElement>(".install-cmd");
+    const note = archPanel.querySelector<HTMLElement>(".install-note");
+    const copyBtn = archPanel.querySelector<HTMLButtonElement>(".copy-btn");
+    if (cmd) cmd.textContent = opt.cmd;
+    if (note) note.textContent = `# ${opt.note}`;
+    if (copyBtn) copyBtn.dataset.copy = opt.cmd;
   }
 
   tabs.forEach((tab) => {
-    const wrap = tab.closest<HTMLElement>("[data-tab-wrap]");
-    if (wrap) {
-      // Arch dropdown tab: button opens menu, option click selects + activates
-      const menu = wrap.querySelector<HTMLElement>(".install-tab-menu");
-      const label = wrap.querySelector<HTMLElement>(".install-tab-label");
-      const options = JSON.parse(tab.dataset.options ?? "[]");
+    tab.addEventListener("click", () => setActiveTab(tab.dataset.tab!));
+  });
 
-      const setOpen = (open: boolean) => {
-        menu?.classList.toggle("invisible", !open);
-        menu?.classList.toggle("opacity-0", !open);
-        menu?.classList.toggle("translate-y-1", !open);
-        tab.setAttribute("aria-expanded", String(open));
-      };
-
-      tab.addEventListener("click", () => {
-        setActiveTab(tab.dataset.tab!);
-        setOpen(tab.getAttribute("aria-expanded") !== "true");
-      });
-
-      menu?.querySelectorAll<HTMLElement>("[data-option]").forEach((li) => {
-        li.querySelector("button")?.addEventListener("click", (e) => {
-          e.stopPropagation();
-          const idx = Number(li.dataset.option);
-          const opt = options[idx];
-          if (!opt) return;
-          // Update label + checkmark
-          if (label) label.textContent = opt.label;
-          menu.querySelectorAll("[data-option]").forEach((l) => {
-            const selected = l === li;
-            l.setAttribute("aria-selected", String(selected));
-            const btn = l.querySelector("button");
-            btn?.classList.toggle("text-moon", selected);
-            btn?.classList.toggle("text-dusk", !selected);
-            btn?.classList.toggle("hover:text-moon", !selected);
-            const check = btn?.querySelector("svg");
-            if (check) check.style.display = selected ? "" : "none";
-          });
-          // Update panel content
-          const panel = document.querySelector<HTMLElement>(`[data-panel="${tab.dataset.tab}"]`);
-          if (panel) {
-            const cmd = panel.querySelector<HTMLElement>(".install-cmd");
-            const note = panel.querySelector<HTMLElement>(".install-note");
-            const copyBtn = panel.querySelector<HTMLButtonElement>(".copy-btn");
-            if (cmd) cmd.textContent = opt.cmd;
-            if (note) note.textContent = `# ${opt.note}`;
-            if (copyBtn) copyBtn.dataset.copy = opt.cmd;
-          }
-          setOpen(false);
-        });
-      });
-
-      document.addEventListener("click", (e) => {
-        if (!wrap.contains(e.target as Node)) setOpen(false);
-      });
-      document.addEventListener("keydown", (e) => {
-        if (e.key === "Escape") setOpen(false);
-      });
-    } else {
-      tab.addEventListener("click", () => setActiveTab(tab.dataset.tab!));
-    }
+  subtabBtns?.forEach((btn) => {
+    btn.addEventListener("click", () => setActiveSubtab(Number(btn.dataset.subtab)));
   });
   document.querySelectorAll<HTMLButtonElement>(".copy-btn").forEach((btn) => {
     btn.addEventListener("click", async () => {
