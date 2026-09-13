@@ -1,0 +1,154 @@
+---
+type Line = { type: "cmd" | "comment"; text: string };
+
+const distros: { name: string; lines: Line[] }[] = [
+  {
+    name: "Flathub",
+    lines: [
+      { type: "cmd", text: "flatpak install flathub moe.tsuna.tsukimi" },
+      { type: "comment", text: "# then run: flatpak run moe.tsuna.tsukimi" },
+    ],
+  },
+  {
+    name: "Arch Linux",
+    lines: [
+      { type: "cmd", text: "paru -S tsukimi-bin" },
+      { type: "comment", text: "# latest commit: paru -S tsukimi-git" },
+    ],
+  },
+  {
+    name: "Fedora",
+    lines: [
+      { type: "cmd", text: "sudo dnf copr enable walker874/tsukimi" },
+      { type: "cmd", text: "sudo dnf install tsukimi" },
+    ],
+  },
+  {
+    name: "Nix",
+    lines: [
+      { type: "cmd", text: "nix profile install nixpkgs#tsukimi" },
+      { type: "comment", text: "# in nixpkgs since 24.11" },
+    ],
+  },
+  {
+    name: "Gentoo",
+    lines: [
+      { type: "cmd", text: "sudo eselect repository enable gentoo-zh" },
+      { type: "cmd", text: "sudo emerge --ask media-video/tsukimi" },
+      { type: "comment", text: "# sync first: sudo emerge --sync gentoo-zh" },
+    ],
+  },
+  {
+    name: "AOSC OS",
+    lines: [{ type: "cmd", text: "sudo oma install tsukimi" }],
+  },
+];
+---
+
+<section id="install" class="install flex flex-col px-(--padding-x) pb-28 pt-[104px]">
+  <h2 class="text-[56px] font-normal leading-[60px] tracking-[-0.01em] text-moon">Install</h2>
+
+  <div class="mt-14 flex w-fit items-center gap-0.5 rounded-sm bg-button" role="tablist" aria-label="Installation methods">
+    {distros.map((d, i) => (
+      <button
+        role="tab"
+        aria-selected={i === 0}
+        data-tab={i}
+        class:list={[
+          "flex items-center rounded-sm border-t border-transparent px-6 py-2.5 text-sm leading-[18px] transition-colors cursor-pointer",
+          i === 0 ? "bg-tab-active font-semibold text-moon border-(--btn-border)" : "font-medium text-tab-text hover:text-moon",
+        ]}
+      >
+        {d.name}
+      </button>
+    ))}
+  </div>
+
+  {distros.map((d, i) => (
+    <div
+      role="tabpanel"
+      data-panel={i}
+      class:list={["mt-5 flex flex-col gap-[14px] rounded-sm bg-bg px-[34px] py-[30px]", i !== 0 && "hidden"]}
+    >
+      <div class="flex items-center justify-between gap-6">
+        <div class="flex min-w-0 flex-col gap-[14px]">
+          {d.lines.map((line) =>
+            line.type === "cmd" ? (
+              <div class="flex items-center gap-3">
+                <span class="font-mono text-base leading-5 text-dusk">$</span>
+                <code class="font-mono text-base leading-5 text-moon">{line.text}</code>
+              </div>
+            ) : (
+              <p class="font-mono text-[13px] leading-4 text-dusk">{line.text}</p>
+            ),
+          )}
+        </div>
+        <button
+          class="copy-btn flex shrink-0 items-center gap-2 self-start rounded-sm border-t border-(--btn-border) bg-button px-[14px] py-2 text-[13px] font-medium leading-4 text-moon shadow-[var(--btn-shadow)_0_1px_10px] transition-colors hover:bg-[#4a4a4a]"
+          data-copy={d.lines
+            .filter((l) => l.type === "cmd")
+            .map((l) => l.text)
+            .join("\n")}
+        >
+          <svg width="13" height="13" viewBox="0 0 14 14" aria-hidden="true" class="shrink-0">
+            <rect x="4.5" y="4.5" width="8" height="8" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.5" />
+            <path
+              d="M9.5 4.5 V3.5 A1.5 1.5 0 0 0 8 2 H3.5 A1.5 1.5 0 0 0 2 3.5 V8 A1.5 1.5 0 0 0 3.5 9.5 H4.5"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.5"
+            />
+          </svg>
+          <span class="copy-label">Copy</span>
+        </button>
+      </div>
+    </div>
+  ))}
+</section>
+
+<style>
+  .install {
+    background-image: radial-gradient(
+      ellipse 46.18% 129.615% at 50% 140.99% in oklab,
+      oklab(35.1% 0.013 -0.021 / 21%) 0%,
+      oklab(47.9% 0.006 -0.011 / 11%) 100%
+    );
+  }
+</style>
+
+<script>
+  const tabs = document.querySelectorAll<HTMLButtonElement>("[data-tab]");
+  const panels = document.querySelectorAll<HTMLElement>("[data-panel]");
+
+  const activeClasses = ["bg-tab-active", "font-semibold", "text-moon"];
+  const inactiveClasses = ["font-medium", "text-tab-text"];
+
+  tabs.forEach((tab) => {
+    tab.addEventListener("click", () => {
+      const target = tab.dataset.tab;
+      tabs.forEach((t) => {
+        const active = t.dataset.tab === target;
+        t.setAttribute("aria-selected", String(active));
+        t.classList.remove(...activeClasses, ...inactiveClasses, "hover:text-moon");
+        t.classList.add(...(active ? activeClasses : inactiveClasses));
+        if (!active) t.classList.add("hover:text-moon");
+      });
+      panels.forEach((p) => p.classList.toggle("hidden", p.dataset.panel !== target));
+    });
+  });
+
+  document.querySelectorAll<HTMLButtonElement>(".copy-btn").forEach((btn) => {
+    btn.addEventListener("click", async () => {
+      const label = btn.querySelector<HTMLElement>(".copy-label");
+      try {
+        await navigator.clipboard.writeText(btn.dataset.copy ?? "");
+        if (label) {
+          label.textContent = "Copied";
+          setTimeout(() => (label.textContent = "Copy"), 1500);
+        }
+      } catch {
+        /* clipboard unavailable */
+      }
+    });
+  });
+</script>

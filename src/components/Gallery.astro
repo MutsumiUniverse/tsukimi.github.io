@@ -1,0 +1,40 @@
+---
+import { Image } from "astro:assets";
+import libraryShot from "../assets/gallery1.png";
+import playerShot from "../assets/gallery2.png";
+import musicShot from "../assets/gallery3.png";
+
+const shots = [
+  { src: libraryShot, caption: "Library", alt: "Tsukimi library view with a poster grid", offset: "mt-0" },
+  { src: playerShot, caption: "Player, with danmaku", alt: "Tsukimi video player with danmaku comments overlaid", offset: "mt-11" },
+  { src: musicShot, caption: "Music", alt: "Tsukimi music player showing an album tracklist", offset: "mt-[88px]" },
+];
+---
+
+<section id="screenshots" class="gallery flex flex-col px-(--padding-x) pb-[120px] pt-[104px]">
+  <h2 class="text-[56px] font-normal leading-[60px] tracking-[-0.01em] text-moon">Screenshots</h2>
+  <div class="mt-[76px] flex items-start justify-between gap-8">
+    {shots.map((shot) => (
+      <figure class={`flex flex-col gap-[14px] ${shot.offset}`}>
+        <Image
+          class="h-auto min-w-[416px] rounded-window shadow-[#05030C8C_0_3px_18px]"
+          src={shot.src}
+          alt={shot.alt}
+          widths={[416, 832]}
+          sizes="416px"
+        />
+        <figcaption class="font-mono text-xs leading-4 text-moon">{shot.caption}</figcaption>
+      </figure>
+    ))}
+  </div>
+</section>
+
+<style>
+  .gallery {
+    background-image: radial-gradient(
+      ellipse 62.995% 119.195% at 50% -19.2% in oklab,
+      oklab(35.1% 0.013 -0.021 / 10%) 0%,
+      oklab(47.9% 0.006 -0.011 / 5%) 100%
+    );
+  }
+</style>

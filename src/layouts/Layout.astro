@@ -1,3 +1,17 @@
+---
+import "../styles/global.css";
+
+interface Props {
+	title?: string;
+	description?: string;
+}
+
+const {
+	title = "Tsukimi — A simple third-party Jellyfin client for Linux",
+	description = "Tsukimi is a simple third-party Jellyfin client for Linux. Native GTK4 UI, MPV GPU-NEXT video playback, GStreamer music playback and danmaku support.",
+} = Astro.props;
+---
+
 <!doctype html>
 <html lang="en">
 	<head>
@@ -6,18 +20,13 @@
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<link rel="icon" href="/favicon.ico" />
 		<meta name="generator" content={Astro.generator} />
-		<title>Astro Basics</title>
+		<meta name="description" content={description} />
+		<meta property="og:title" content={title} />
+		<meta property="og:description" content={description} />
+		<meta property="og:type" content="website" />
+		<title>{title}</title>
 	</head>
 	<body>
 		<slot />
 	</body>
 </html>
-
-<style>
-	html,
-	body {
-		margin: 0;
-		width: 100%;
-		height: 100%;
-	}
-</style>

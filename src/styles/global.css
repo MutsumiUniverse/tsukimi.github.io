@@ -1,0 +1,45 @@
+@import "tailwindcss";
+@import "@fontsource-variable/inter";
+@import "@fontsource-variable/jetbrains-mono";
+
+@theme {
+  /* Design tokens — see design-system.md */
+  --color-moon: #f7f5f9;
+  --color-ink: #3d3846;
+  --color-night: #1b1626;
+  --color-violet: #5a63b8;
+  --color-orchid: #aeb5fa;
+  --color-lavender: #c8bbd9;
+  --color-mist: #e6e1ee;
+  --color-slate: #5b5470;
+  --color-dusk: #a8a5b3;
+  --color-border: #d5cce4;
+  --color-tint: #efe9f5;
+  --color-bg: #202020;
+  --color-button: #404040;
+  --color-tab-active: #363737;
+  --color-tab-text: #c3c3c3;
+
+  --btn-border: #525054;
+  --btn-shadow: #05040780;
+
+  --font-sans: "Inter Variable", "Inter", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono Variable", "JetBrains Mono", ui-monospace, monospace;
+  --font-display: "Noto Serif", serif;
+
+  --padding-x: 64px;
+  --radius-sm: 8px;
+  --radius-window: 4px;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--color-bg);
+  color: var(--color-moon);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}

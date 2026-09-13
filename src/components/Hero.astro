@@ -1,0 +1,107 @@
+---
+import { Image } from "astro:assets";
+import heroShot from "../assets/hero.png";
+---
+
+<section class="hero relative flex flex-col overflow-clip" id="top">
+	<div class="parallax pointer-events-none absolute inset-0" data-depth="0.08" aria-hidden="true">
+		<div class="moon-glow absolute left-1/2 top-[-320px] h-[720px] w-[720px] -translate-x-1/2 rounded-full"></div>
+	</div>
+
+	<div class="relative flex items-center justify-between px-(--padding-x) pb-[104px] pt-[139px]">
+		<div class="flex w-[600px] shrink-0 flex-col items-start">
+			<h1 class="mt-[26px] text-[62px] font-normal leading-[68px] tracking-[-0.01em] text-moon">
+				A simple<br />third-party Jellyfin<br />client for Linux.
+			</h1>
+			<div class="mt-[38px] flex items-end gap-[21px]">
+				<a
+					href="#install"
+					class="flex items-center gap-[9px] rounded-sm border-t border-(--btn-border) bg-button px-5 py-3 text-[15px] font-semibold leading-[18px] text-moon shadow-[var(--btn-shadow)_0_1px_12px] transition-colors hover:bg-[#4a4a4a]"
+				>
+					<svg width="15" height="15" viewBox="0 0 16 16" aria-hidden="true" class="shrink-0">
+						<path d="M8 2.5 V10 M4.8 7 L8 10.2 L11.2 7 M3 13.5 H13" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+					</svg>
+					Install Tsukimi
+				</a>
+			</div>
+			<p class="mt-[30px] font-mono text-xs leading-4 text-dusk">v26.7.3 · GPL-3.0 · Flathub / AUR / nixpkgs / COPR</p>
+		</div>
+
+		<!-- Parallax layer: screenshot (depth 0.18) -->
+		<div class="parallax shrink-0" data-depth="0.18">
+			<Image
+				class="h-[406px] w-[578px] rounded-window object-cover shadow-[#05030C8C_0_3px_18px]"
+				src={heroShot}
+				alt="Tsukimi playing Fate/Zero with the episode list open"
+				widths={[578, 1156, 1617]}
+				sizes="578px"
+				loading="eager"
+			/>
+		</div>
+	</div>
+</section>
+
+<style>
+	.hero {
+		background-image: radial-gradient(
+			ellipse 40.17% 77.705% at 50% 10.85% in oklab,
+			oklab(46.4% 0.02 -0.041 / 10%) 0%,
+			oklab(81.2% 0.025 -0.036 / 4%) 100%
+		);
+	}
+
+	.moon-glow {
+		background: radial-gradient(
+			circle,
+			color-mix(in srgb, var(--color-moon) 7%, transparent) 0%,
+			color-mix(in srgb, var(--color-moon) 3%, transparent) 42%,
+			transparent 70%
+		);
+	}
+
+	.parallax {
+		will-change: transform;
+	}
+</style>
+
+<script>
+	const hero = document.querySelector<HTMLElement>(".hero");
+	const layers = hero?.querySelectorAll<HTMLElement>("[data-depth]");
+
+	if (hero && layers?.length && !matchMedia("(prefers-reduced-motion: reduce)").matches) {
+		let targetX = 0;
+		let targetY = 0;
+		let curX = 0;
+		let curY = 0;
+		let raf = 0;
+
+		const render = () => {
+			curX += (targetX - curX) * 0.12;
+			curY += (targetY - curY) * 0.12;
+			const sy = window.scrollY;
+			for (const el of layers) {
+				const depth = Number(el.dataset.depth);
+				const dx = -curX * depth * 60;
+				const dy = -curY * depth * 60 + sy * depth * 0.6;
+				el.style.transform = `translate3d(${dx.toFixed(2)}px, ${dy.toFixed(2)}px, 0)`;
+			}
+			if (Math.abs(targetX - curX) > 0.001 || Math.abs(targetY - curY) > 0.001 || sy > 0) {
+				raf = requestAnimationFrame(render);
+			} else {
+				raf = 0;
+			}
+		};
+
+		const kick = () => {
+			if (!raf) raf = requestAnimationFrame(render);
+		};
+
+		window.addEventListener("mousemove", (e) => {
+			targetX = (e.clientX / window.innerWidth) * 2 - 1;
+			targetY = (e.clientY / window.innerHeight) * 2 - 1;
+			kick();
+		}, { passive: true });
+
+		window.addEventListener("scroll", kick, { passive: true });
+	}
+</script>
