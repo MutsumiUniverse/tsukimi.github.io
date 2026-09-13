@@ -19,7 +19,7 @@ const distros: Distro[] = [
   {
     name: "Arch Linux",
     options: [
-      { label: "AUR binary", cmd: "paru -S tsukimi-bin", note: "aur.archlinux.org/packages/tsukimi-bin" },
+      { label: "AUR", cmd: "paru -S tsukimi-bin", note: "aur.archlinux.org/packages/tsukimi-bin" },
       { label: "AUR git", cmd: "paru -S tsukimi-git", note: "aur.archlinux.org/packages/tsukimi-git" },
       { label: "Archlinuxcn", cmd: "sudo pacman -Syu tsukimi", note: "github.com/archlinuxcn/repo" },
       { label: "Archlinuxcn (git)", cmd: "sudo pacman -Syu tsukimi-git", note: "github.com/archlinuxcn/repo" },
@@ -81,79 +81,86 @@ const distros: Distro[] = [
       ))}
     </div>
 
-    {/* Arch sub-tabs — shown when Arch tab is active */}
-    <div class="install-subtabs mt-3 hidden flex-wrap items-center gap-0.5 rounded-sm bg-button" data-subtabs>
-      {distros.find((d) => d.options)?.options?.map((o, j) => (
-        <button
-          role="tab"
-          aria-selected={j === 0}
-          data-subtab={j}
+    {/* All panels stacked in one grid cell — container height = tallest panel, footer never moves */}
+    <div class="mt-5 grid">
+      {distros.map((d, i) => (
+        <div
+          role="tabpanel"
+          data-panel={i}
+          aria-hidden={i !== 0}
           class:list={[
-            "flex grow basis-[30%] items-center justify-center rounded-sm border-t border-transparent px-3 py-2 text-[13px] leading-[16px] transition-colors cursor-pointer sm:grow-0 sm:basis-auto sm:px-4",
-            j === 0 ? "bg-tab-active font-semibold text-moon border-(--btn-border)" : "font-medium text-tab-text hover:text-moon",
+            "col-start-1 row-start-1 flex flex-col gap-[14px] rounded-sm bg-bg px-5 py-6 transition-opacity duration-150 sm:px-[34px] sm:py-[30px]",
+            i !== 0 && "invisible pointer-events-none opacity-0",
           ]}
         >
-          {o.label}
-        </button>
-      ))}
-    </div>
-
-    {distros.map((d, i) => (
-      <div
-        role="tabpanel"
-        data-panel={i}
-        class:list={["mt-5 flex flex-col gap-[14px] rounded-sm bg-bg px-5 py-6 sm:px-[34px] sm:py-[30px]", i !== 0 && "hidden"]}
-      >
-        <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between sm:gap-6">
-          <div class="flex min-w-0 flex-col gap-[14px]">
-            {d.options ? (
-              <div class="flex flex-col gap-[14px]">
-                <div class="flex items-center gap-3">
-                  <span class="font-mono text-base leading-5 text-dusk">$</span>
-                  <code class="install-cmd font-mono text-sm leading-5 text-moon sm:text-base">{d.options[0].cmd}</code>
-                </div>
-                <p class="install-note font-mono text-[13px] leading-4 text-dusk"># {d.options[0].note}</p>
-              </div>
-            ) : (
-              d.lines?.map((line) =>
-                line.type === "cmd" ? (
+          {d.options && (
+            <div class="install-subtabs mb-1 flex flex-wrap items-center gap-0.5 self-start rounded-sm bg-button" data-subtabs>
+              {d.options.map((o, j) => (
+                <button
+                  role="tab"
+                  aria-selected={j === 0}
+                  data-subtab={j}
+                  class:list={[
+                    "flex items-center justify-center rounded-sm border-t border-transparent px-3 py-2 text-[13px] leading-[16px] transition-colors cursor-pointer sm:px-4",
+                    j === 0 ? "bg-tab-active font-semibold text-moon border-(--btn-border)" : "font-medium text-tab-text hover:text-moon",
+                  ]}
+                >
+                  {o.label}
+                </button>
+              ))}
+            </div>
+          )}
+          <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between sm:gap-6">
+            <div class="flex min-w-0 flex-col gap-[14px]">
+              {d.options ? (
+                <div class="flex flex-col gap-[14px]">
                   <div class="flex items-center gap-3">
                     <span class="font-mono text-base leading-5 text-dusk">$</span>
-                    <code class="font-mono text-sm leading-5 text-moon sm:text-base">{line.text}</code>
+                    <code class="install-cmd font-mono text-sm leading-5 text-moon sm:text-base">{d.options[0].cmd}</code>
                   </div>
-                ) : (
-                  <p class="font-mono text-[13px] leading-4 text-dusk">{line.text}</p>
-                ),
-              )
-            )}
+                  <p class="install-note font-mono text-[13px] leading-4 text-dusk"># {d.options[0].note}</p>
+                </div>
+              ) : (
+                d.lines?.map((line) =>
+                  line.type === "cmd" ? (
+                    <div class="flex items-center gap-3">
+                      <span class="font-mono text-base leading-5 text-dusk">$</span>
+                      <code class="font-mono text-sm leading-5 text-moon sm:text-base">{line.text}</code>
+                    </div>
+                  ) : (
+                    <p class="font-mono text-[13px] leading-4 text-dusk">{line.text}</p>
+                  ),
+                )
+              )}
+            </div>
+            <button
+              class="copy-btn flex w-fit shrink-0 items-center gap-2 self-start rounded-sm border-t border-(--btn-border) bg-button px-[14px] py-2 text-[13px] font-medium leading-4 text-moon shadow-[var(--btn-shadow)_0_1px_10px] transition-colors hover:bg-[#4a4a4a]"
+              data-copy={
+                d.options
+                  ? d.options[0].cmd
+                  : d.lines
+                      ?.filter((l) => l.type === "cmd")
+                      .map((l) => l.text)
+                      .join("\n")
+              }
+            >
+              <svg width="13" height="13" viewBox="0 0 14 14" aria-hidden="true" class="shrink-0">
+                <rect x="4.5" y="4.5" width="8" height="8" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.5" />
+                <path
+                  d="M9.5 4.5 V3.5 A1.5 1.5 0 0 0 8 2 H3.5 A1.5 1.5 0 0 0 2 3.5 V8 A1.5 1.5 0 0 0 3.5 9.5 H4.5"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                />
+              </svg>
+              <span class="copy-label" data-copy-label={t("install.copy")} data-copied-label={t("install.copied")}>
+                {t("install.copy")}
+              </span>
+            </button>
           </div>
-          <button
-            class="copy-btn flex w-fit shrink-0 items-center gap-2 self-start rounded-sm border-t border-(--btn-border) bg-button px-[14px] py-2 text-[13px] font-medium leading-4 text-moon shadow-[var(--btn-shadow)_0_1px_10px] transition-colors hover:bg-[#4a4a4a]"
-            data-copy={
-              d.options
-                ? d.options[0].cmd
-                : d.lines
-                    ?.filter((l) => l.type === "cmd")
-                    .map((l) => l.text)
-                    .join("\n")
-            }
-          >
-            <svg width="13" height="13" viewBox="0 0 14 14" aria-hidden="true" class="shrink-0">
-              <rect x="4.5" y="4.5" width="8" height="8" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.5" />
-              <path
-                d="M9.5 4.5 V3.5 A1.5 1.5 0 0 0 8 2 H3.5 A1.5 1.5 0 0 0 2 3.5 V8 A1.5 1.5 0 0 0 3.5 9.5 H4.5"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="1.5"
-              />
-            </svg>
-            <span class="copy-label" data-copy-label={t("install.copy")} data-copied-label={t("install.copied")}>
-              {t("install.copy")}
-            </span>
-          </button>
         </div>
-      </div>
-    ))}
+      ))}
+    </div>
   </div>
 </section>
 
@@ -165,64 +172,41 @@ const distros: Distro[] = [
       oklab(47.9% 0.006 -0.011 / 11%) 100%
     );
   }
-
-  .install-tab-menu button {
-    cursor: pointer;
-  }
-  .install-tab-menu [aria-selected="true"] {
-    color: var(--color-moon);
-  }
 </style>
 
 <script>
-  const tabs = document.querySelectorAll<HTMLButtonElement | HTMLSelectElement>("[data-tab]");
+  const tabs = document.querySelectorAll<HTMLButtonElement>("[data-tab]");
   const panels = document.querySelectorAll<HTMLElement>("[data-panel]");
+  const subtabBtns = document.querySelectorAll<HTMLButtonElement>("[data-subtab]");
 
-  // Lock panel height to the tallest so the footer doesn't jump on tab switch
-  let maxH = 0;
-  panels.forEach((p) => {
-    const wasHidden = p.classList.contains("hidden");
-    if (wasHidden) p.classList.remove("hidden");
-    maxH = Math.max(maxH, p.offsetHeight);
-    if (wasHidden) p.classList.add("hidden");
-  });
-  panels.forEach((p) => (p.style.minHeight = `${maxH}px`));
-
-  const activeClasses = ["bg-tab-active", "font-semibold", "text-moon"];
-  const inactiveClasses = ["font-medium", "text-tab-text"];
-
-  const subtabs = document.querySelector<HTMLElement>("[data-subtabs]");
-  const subtabBtns = subtabs?.querySelectorAll<HTMLButtonElement>("[data-subtab]");
   const archTab = document.querySelector<HTMLElement>("[data-tab][data-options]");
   const archOptions = archTab ? JSON.parse(archTab.dataset.options ?? "[]") : [];
   const archPanel = archTab ? document.querySelector<HTMLElement>(`[data-panel="${archTab.dataset.tab}"]`) : null;
 
+  const activeClasses = ["bg-tab-active", "font-semibold", "text-moon"];
+  const inactiveClasses = ["font-medium", "text-tab-text"];
+
+  function styleTab(el: HTMLElement, active: boolean) {
+    el.setAttribute("aria-selected", String(active));
+    el.classList.remove(...activeClasses, ...inactiveClasses, "hover:text-moon", "border-(--btn-border)", "border-transparent");
+    el.classList.add(...(active ? activeClasses : inactiveClasses));
+    el.classList.add(active ? "border-(--btn-border)" : "border-transparent");
+    if (!active) el.classList.add("hover:text-moon");
+  }
+
   function setActiveTab(target: string) {
-    tabs.forEach((t) => {
-      const active = t.dataset.tab === target;
-      t.setAttribute("aria-selected", String(active));
-      t.classList.remove(...activeClasses, ...inactiveClasses, "hover:text-moon", "border-(--btn-border)", "border-transparent");
-      t.classList.add(...(active ? activeClasses : inactiveClasses));
-      t.classList.add(active ? "border-(--btn-border)" : "border-transparent");
-      if (!active) t.classList.add("hover:text-moon");
+    tabs.forEach((t) => styleTab(t, t.dataset.tab === target));
+    panels.forEach((p) => {
+      const active = p.dataset.panel === target;
+      p.classList.toggle("invisible", !active);
+      p.classList.toggle("pointer-events-none", !active);
+      p.classList.toggle("opacity-0", !active);
+      p.setAttribute("aria-hidden", String(!active));
     });
-    panels.forEach((p) => p.classList.toggle("hidden", p.dataset.panel !== target));
-    // Show sub-tabs only when Arch tab is active
-    if (subtabs && archTab) {
-      subtabs.classList.toggle("hidden", target !== archTab.dataset.tab);
-      subtabs.classList.toggle("flex", target === archTab.dataset.tab);
-    }
   }
 
   function setActiveSubtab(idx: number) {
-    subtabBtns?.forEach((b, j) => {
-      const active = j === idx;
-      b.setAttribute("aria-selected", String(active));
-      b.classList.remove(...activeClasses, ...inactiveClasses, "hover:text-moon", "border-(--btn-border)", "border-transparent");
-      b.classList.add(...(active ? activeClasses : inactiveClasses));
-      b.classList.add(active ? "border-(--btn-border)" : "border-transparent");
-      if (!active) b.classList.add("hover:text-moon");
-    });
+    subtabBtns.forEach((b, j) => styleTab(b, j === idx));
     const opt = archOptions[idx];
     if (!opt || !archPanel) return;
     const cmd = archPanel.querySelector<HTMLElement>(".install-cmd");
@@ -237,9 +221,10 @@ const distros: Distro[] = [
     tab.addEventListener("click", () => setActiveTab(tab.dataset.tab!));
   });
 
-  subtabBtns?.forEach((btn) => {
+  subtabBtns.forEach((btn) => {
     btn.addEventListener("click", () => setActiveSubtab(Number(btn.dataset.subtab)));
   });
+
   document.querySelectorAll<HTMLButtonElement>(".copy-btn").forEach((btn) => {
     btn.addEventListener("click", async () => {
       const label = btn.querySelector<HTMLElement>(".copy-label");
