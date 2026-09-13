@@ -3,17 +3,21 @@ import { Image } from "astro:assets";
 import libraryShot from "../assets/gallery1.png";
 import playerShot from "../assets/gallery2.png";
 import musicShot from "../assets/gallery3.png";
+import { useTranslations } from "../i18n/utils";
+import type { Lang } from "../i18n/ui";
+
+const t = useTranslations((Astro.currentLocale ?? "en") as Lang);
 
 const shots = [
-  { src: libraryShot, caption: "Library", alt: "Tsukimi library view with a poster grid", offset: "mt-0" },
-  { src: playerShot, caption: "Player, with danmaku", alt: "Tsukimi video player with danmaku comments overlaid", offset: "mt-11" },
-  { src: musicShot, caption: "Music", alt: "Tsukimi music player showing an album tracklist", offset: "mt-[88px]" },
+  { src: libraryShot, caption: t("gallery.library"), alt: t("gallery.library.alt"), offset: "mt-0" },
+  { src: playerShot, caption: t("gallery.player"), alt: t("gallery.player.alt"), offset: "mt-11" },
+  { src: musicShot, caption: t("gallery.music"), alt: t("gallery.music.alt"), offset: "mt-[88px]" },
 ];
 ---
 
 <section id="screenshots" class="gallery px-(--padding-x) pb-[120px] pt-[104px]">
   <div class="mx-auto flex w-full max-w-[1312px] flex-col">
-    <h2 class="text-[56px] font-normal leading-[60px] tracking-[-0.01em] text-moon">Screenshots</h2>
+    <h2 class="text-[56px] font-normal leading-[60px] tracking-[-0.01em] text-moon">{t("gallery.title")}</h2>
     <div class="mt-[76px] flex items-start justify-between gap-8">
       {shots.map((shot) => (
         <figure class={`flex flex-col gap-[14px] ${shot.offset}`}>

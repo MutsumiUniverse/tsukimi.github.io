@@ -1,5 +1,9 @@
 ---
 import logo from "../assets/logo.svg";
+import { useTranslations } from "../i18n/utils";
+import type { Lang } from "../i18n/ui";
+
+const t = useTranslations((Astro.currentLocale ?? "en") as Lang);
 ---
 
 <footer class="border-t border-moon/8 px-(--padding-x) py-[34px]">
@@ -7,7 +11,7 @@ import logo from "../assets/logo.svg";
 		<div class="flex items-center gap-3">
 			<img src={logo.src} alt="" width="22" height="22" class="rounded-md" />
 			<span class="text-sm font-semibold leading-[18px] text-moon">Tsukimi</span>
-			<span class="ml-3 text-[13px] leading-4 text-dusk">© 2026 Tsukimi Contributors</span>
+			<span class="ml-3 text-[13px] leading-4 text-dusk">{t("footer.copyright")}</span>
 		</div>
 		<div class="flex items-center gap-[26px]">
 			<a class="text-[13px] leading-4 text-moon transition-colors hover:text-dusk" href="https://github.com/tsukinaha/tsukimi" target="_blank" rel="noopener">GitHub</a>

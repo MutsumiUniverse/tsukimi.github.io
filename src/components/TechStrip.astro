@@ -1,10 +1,15 @@
 ---
+import { useTranslations } from "../i18n/utils";
+import type { Lang } from "../i18n/ui";
+
+const t = useTranslations((Astro.currentLocale ?? "en") as Lang);
+
 const items = [
-  { label: "GTK4 · LIBADWAITA", value: "Native desktop UI" },
-  { label: "MPV GPU-NEXT", value: "Video playback" },
-  { label: "GSTREAMER", value: "Music playback" },
-  { label: "DANMAKU", value: "Danmaku support" },
-  { label: "GPL-3.0", value: "Free & open source" },
+  { label: "GTK4 · LIBADWAITA", value: t("tech.gtk") },
+  { label: "MPV GPU-NEXT", value: t("tech.mpv") },
+  { label: "GSTREAMER", value: t("tech.gst") },
+  { label: "DANMAKU", value: t("tech.danmaku") },
+  { label: "GPL-3.0", value: t("tech.gpl") },
 ];
 ---
 

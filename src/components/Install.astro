@@ -1,4 +1,9 @@
 ---
+import { useTranslations } from "../i18n/utils";
+import type { Lang } from "../i18n/ui";
+
+const t = useTranslations((Astro.currentLocale ?? "en") as Lang);
+
 type Line = { type: "cmd" | "comment"; text: string };
 
 const distros: { name: string; lines: Line[] }[] = [
@@ -6,14 +11,14 @@ const distros: { name: string; lines: Line[] }[] = [
     name: "Flathub",
     lines: [
       { type: "cmd", text: "flatpak install flathub moe.tsuna.tsukimi" },
-      { type: "comment", text: "# then run: flatpak run moe.tsuna.tsukimi" },
+      { type: "comment", text: t("install.flathub.note") },
     ],
   },
   {
     name: "Arch Linux",
     lines: [
       { type: "cmd", text: "paru -S tsukimi-bin" },
-      { type: "comment", text: "# latest commit: paru -S tsukimi-git" },
+      { type: "comment", text: t("install.arch.note") },
     ],
   },
   {
@@ -27,7 +32,7 @@ const distros: { name: string; lines: Line[] }[] = [
     name: "Nix",
     lines: [
       { type: "cmd", text: "nix profile install nixpkgs#tsukimi" },
-      { type: "comment", text: "# in nixpkgs since 24.11" },
+      { type: "comment", text: t("install.nix.note") },
     ],
   },
   {
@@ -35,7 +40,7 @@ const distros: { name: string; lines: Line[] }[] = [
     lines: [
       { type: "cmd", text: "sudo eselect repository enable gentoo-zh" },
       { type: "cmd", text: "sudo emerge --ask media-video/tsukimi" },
-      { type: "comment", text: "# sync first: sudo emerge --sync gentoo-zh" },
+      { type: "comment", text: t("install.gentoo.note") },
     ],
   },
   {
@@ -47,9 +52,9 @@ const distros: { name: string; lines: Line[] }[] = [
 
 <section id="install" class="install px-(--padding-x) pb-28 pt-[104px]">
   <div class="mx-auto flex w-full max-w-[1312px] flex-col">
-    <h2 class="text-[56px] font-normal leading-[60px] tracking-[-0.01em] text-moon">Install</h2>
+    <h2 class="text-[56px] font-normal leading-[60px] tracking-[-0.01em] text-moon">{t("install.title")}</h2>
 
-  <div class="mt-14 flex w-fit items-center gap-0.5 rounded-sm bg-button" role="tablist" aria-label="Installation methods">
+  <div class="mt-14 flex w-fit items-center gap-0.5 rounded-sm bg-button" role="tablist" aria-label={t("install.tabs")}>
     {distros.map((d, i) => (
       <button
         role="tab"
@@ -100,7 +105,7 @@ const distros: { name: string; lines: Line[] }[] = [
               stroke-width="1.5"
             />
           </svg>
-          <span class="copy-label">Copy</span>
+          <span class="copy-label" data-copy-label={t("install.copy")} data-copied-label={t("install.copied")}>{t("install.copy")}</span>
         </button>
       </div>
     </div>
@@ -145,8 +150,8 @@ const distros: { name: string; lines: Line[] }[] = [
       try {
         await navigator.clipboard.writeText(btn.dataset.copy ?? "");
         if (label) {
-          label.textContent = "Copied";
-          setTimeout(() => (label.textContent = "Copy"), 1500);
+          label.textContent = label.dataset.copiedLabel ?? "Copied";
+          setTimeout(() => (label.textContent = label.dataset.copyLabel ?? "Copy"), 1500);
         }
       } catch {
         /* clipboard unavailable */
